@@ -1,8 +1,6 @@
 ﻿namespace Domain.Common;
 
-public abstract class Entity
+public abstract class Entity<T>
 {
-  public required string ID { get; set; }
-  public DateTimeOffset CreatedAt { get; set; }
-  public DateTimeOffset LastModified { get; set; }
+  public required T ID { get; set; }
 }
