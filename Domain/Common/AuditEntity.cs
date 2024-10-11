@@ -2,6 +2,6 @@
 
 public abstract class AuditEntity<T> : Entity<T>
 {
-  public DateTimeOffset CreatedAt { get; set; }
-  public DateTimeOffset ModifiedAt { get; set; }
+  public required DateTimeOffset CreatedAt { get; set; }
+  public required DateTimeOffset ModifiedAt { get; set; }
 }

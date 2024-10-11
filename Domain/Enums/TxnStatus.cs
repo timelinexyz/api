@@ -4,7 +4,7 @@ using Newtonsoft.Json.Converters;
 namespace Domain.Enums;
 
 [JsonConverter(typeof(StringEnumConverter))]
-public enum TxStatus
+public enum TxnStatus
 {
   None,
   Open,
