@@ -1,5 +1,12 @@
-﻿namespace Persistence.Models;
+﻿using Domain.Entities;
 
+namespace Persistence.Koinly;
+
+internal class KoinlyTransactions
+{
+  public Txn[] Txns { get; set; }
+
+}
 internal class KoinlyTxnPage
 {
   public KoinlyTxn[] transactions { get; set; }
@@ -11,15 +18,15 @@ internal class KoinlyTxn
   public DateTimeOffset? date { get; set; }
   public string? type { get; set; }
   public string? label { get; set; }
-  public KoinlyAmout From { get; set; }
-  public KoinlyAmout To { get; set; }
-  public KoinlyAmout Fee { get; set; }
+  public KoinlyAmount from { get; set; }
+  public KoinlyAmount? to { get; set; }
+  public KoinlyAmount? fee { get; set; }
   public decimal? net_value { get; set; }
   public decimal? fee_value { get; set; }
   public bool? margin { get; set; }
 }
 
-internal class KoinlyAmout
+internal class KoinlyAmount
 {
   public decimal? amount { get; set; }
   public KoinlyCurrency? currency { get; set; }

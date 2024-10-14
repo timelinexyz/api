@@ -8,6 +8,8 @@ public enum TxnSortBy
 {
   None,
   CreatedAt,
+  ModifiedAt,
+  Date,
   Pnl,
   Amount
 }

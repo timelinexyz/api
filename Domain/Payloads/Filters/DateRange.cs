@@ -1,9 +1,9 @@
-﻿namespace Domain.Common;
+﻿namespace Domain.Payloads;
 
 public class DateRange
 {
-  public DateTime? After { get; set; }
-  public DateTime? Before { get; set; }
+  public DateTimeOffset? After { get; set; }
+  public DateTimeOffset? Before { get; set; }
 
   public bool IsValid() => After.HasValue || Before.HasValue;
   public bool IsInvalid() => !IsValid();

@@ -3,5 +3,5 @@
 public abstract class AuditEntity<T> : Entity<T>
 {
   public required DateTimeOffset CreatedAt { get; set; }
-  public required DateTimeOffset ModifiedAt { get; set; }
+  public DateTimeOffset? ModifiedAt { get; set; }
 }

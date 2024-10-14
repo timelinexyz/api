@@ -7,4 +7,5 @@ public interface ITxnRepository
 {
   Task<IPaginatedList<Txn>> Search(TxnFilter filter, TxnSort sort);
   Task Patch(TxnPatch txn);
+  Task Delete(IEnumerable<string> ids);
 }
