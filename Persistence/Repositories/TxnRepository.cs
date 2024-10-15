@@ -101,6 +101,10 @@ internal sealed class TxnRepository(KoinlyTransactions txns) : ITxnRepository
     }
 
     // Description
+    if (filter.Description is not null)
+    {
+      query = query.Where(t => filter.Description.Evaluate(t.Description));
+    }
 
     // Margin
     if (filter.Margin.HasValue)

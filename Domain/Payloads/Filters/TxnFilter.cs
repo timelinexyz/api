@@ -3,7 +3,7 @@
 namespace Domain.Payloads;
 
 // TODO: include relational operators (contains, starts with, is, is not, etc) that make sense for each data type
-public class TxnFilter : Pagination
+public class TxnFilter : PaginationFilter
 {
   public string? ParentID { get; set; }
   public DateRange? Date { get; set; }

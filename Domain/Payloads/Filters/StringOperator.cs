@@ -7,7 +7,8 @@ namespace Domain.Payloads;
 public enum StringOperator
 {
   None,
+  Equals,
   Contains,
   StartsWith,
-  EndsWith,
+  EndsWith
 }
