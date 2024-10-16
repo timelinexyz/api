@@ -1,3 +1,4 @@
+using API.Middleware;
 using Application;
 using Infrastructure;
 using Persistence;
@@ -6,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddApiVersioning();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddInfrastructure();
@@ -23,5 +25,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
+app.UseMiddleware<ExceptionHandlerMiddleware>();
+
 
 app.Run();

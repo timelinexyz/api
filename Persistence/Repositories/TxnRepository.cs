@@ -4,6 +4,7 @@ using Domain.Interfaces;
 using Domain.Payloads;
 using Persistence.Koinly;
 using Persistence.Models;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace Persistence.Repositories;
 
@@ -111,6 +112,10 @@ internal sealed class TxnRepository(KoinlyTransactions txns) : ITxnRepository
     {
       query = query.Where(t => t.Margin == filter.Margin.Value);
     }
+
+    // Sorting
+    // TODO: Sorting
+    query = query.OrderByDescending(t => t.Date);
 
     return PaginatedList<Txn>.Create(query, filter.PageNumber, filter.PageSize);
   }
