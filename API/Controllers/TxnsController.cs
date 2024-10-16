@@ -19,7 +19,7 @@ public class TxnsController(ISender sender) : ControllerBase
 
     if (result.IsSuccess)
     {
-      return Ok(result);
+      return Ok(result.Value);
     }
     else
     {
