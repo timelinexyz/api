@@ -1,16 +1,21 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace Domain.Payloads;
+namespace Core.Filters;
 
 [JsonConverter(typeof(StringEnumConverter))]
-public enum StringOperator
+public enum Operator
 {
   None,
+
+  // Single value
   Equals,
-  IsNull,
   Contains,
   StartsWith,
   EndsWith,
-  In
+
+  // Array
+  In,
+  Any,
+  All,
 }

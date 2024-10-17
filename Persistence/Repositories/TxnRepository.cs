@@ -20,13 +20,9 @@ internal sealed class TxnRepository(KoinlyTransactions txns) : ITxnRepository
     }
 
     // Date
-    if (filter.Date?.After.HasValue ?? false)
+    if (filter.Date is not null)
     {
-      query = query.Where(t => t.Date > filter.Date.After.Value);
-    }
-    if (filter.Date?.Before.HasValue ?? false)
-    {
-      query = query.Where(t => t.Date <= filter.Date.Before.Value);
+      query = query.Where(t => filter.Date.ApplyFilter(t.Date));
     }
 
     // Status
@@ -36,74 +32,119 @@ internal sealed class TxnRepository(KoinlyTransactions txns) : ITxnRepository
     }
 
     // Category
-    if (!filter.Category?.Types!.IsNullOrEmpty() ?? false)
+    if (filter.Category is not null)
     {
-      query = query.Where(t => filter.Category!.Types!.Contains(t.Category.Type));
-    }
-    if (!filter.Category?.Subtypes!.IsNullOrEmpty() ?? false)
-    {
-      query = query.Where(t => !string.IsNullOrWhiteSpace(t.Category.Subtype) && filter.Category!.Subtypes!.Contains(t.Category.Subtype));
-    }
-    if (!filter.Category?.Labels!.IsNullOrEmpty() ?? false)
-    {
-      // TODO: many to many - All/Any ??
-      query = query.Where(t => t.Category.Labels != null && filter.Category!.Labels!.ToHashSet().Overlaps(t.Category.Labels));
+      if (filter.Category.Type is not null)
+      {
+        query = query.Where(t => filter.Category.Type.ApplyFilter(t.Category.Type));
+      }
+      if (filter.Category.Subtype is not null)
+      {
+        query = query.Where(t => filter.Category.Subtype.ApplyFilter(t.Category.Subtype));
+      }
+      if (filter.Category.Labels is not null)
+      {
+        query = query.Where(t => t.Category.Labels != null && filter.Category.Labels.ApplyFilter(t.Category.Labels));
+      }
     }
 
     // From
-    if (!filter.From?.Types!.IsNullOrEmpty() ?? false)
+    if (filter.From is not null)
     {
-      query = query.Where(t => filter.From!.Types!.Contains(t.From.Currency.Type));
-    }
-    if (!filter.From?.Symbols!.IsNullOrEmpty() ?? false)
-    {
-      query = query.Where(t => filter.From!.Symbols!.Contains(t.From.Currency.Symbol));
+      if (filter.From.Currency is not null)
+      {
+        if (filter.From.Currency.Type is not null)
+        {
+          query = query.Where(t => filter.From.Currency.Type.ApplyFilter(t.From.Currency.Type));
+        }
+        if (filter.From.Currency.Symbol is not null)
+        {
+          query = query.Where(t => filter.From.Currency.Symbol.ApplyFilter(t.From.Currency.Symbol));
+        }
+      }
+      if (filter.From.Wallet is not null)
+      {
+        if (filter.From.Wallet.Name is not null)
+        {
+          query = query.Where(t => filter.From.Wallet.Name.ApplyFilter(t.From.Wallet.Name));
+        }
+        if (filter.From.Wallet.Type is not null)
+        {
+          query = query.Where(t => filter.From.Wallet.Type.ApplyFilter(t.From.Wallet.Type));
+        }
+      }
     }
 
     // To
-    if (!filter.To?.Types!.IsNullOrEmpty() ?? false)
+    if (filter.To is not null)
     {
-      query = query.Where(t => t.To != null && filter.To!.Types!.Contains(t.To.Currency.Type));
-    }
-    if (!filter.To?.Symbols!.IsNullOrEmpty() ?? false)
-    {
-      query = query.Where(t => t.To != null && filter.To!.Symbols!.Contains(t.To.Currency.Symbol));
+      if (filter.To.Currency is not null)
+      {
+        if (filter.To.Currency.Type is not null)
+        {
+          query = query.Where(t => filter.To.Currency.Type.ApplyFilter(t.To.Currency.Type)); // TODO: null check????
+        }
+        if (filter.To.Currency.Symbol is not null)
+        {
+          query = query.Where(t => filter.To.Currency.Symbol.ApplyFilter(t.To.Currency.Symbol));
+        }
+      }
+      if (filter.To.Wallet is not null)
+      {
+        if (filter.To.Wallet.Name is not null)
+        {
+          query = query.Where(t => filter.To.Wallet.Name.ApplyFilter(t.To.Wallet.Name));
+        }
+        if (filter.To.Wallet.Type is not null)
+        {
+          query = query.Where(t => filter.To.Wallet.Type.ApplyFilter(t.To.Wallet.Type));
+        }
+      }
     }
 
     // Fee
-    if (!filter.Fee?.Types!.IsNullOrEmpty() ?? false)
+    if (filter.Fee is not null)
     {
-      query = query.Where(t => t.Fee != null && filter.Fee!.Types!.Contains(t.Fee.Currency.Type));
-    }
-    if (!filter.Fee?.Symbols!.IsNullOrEmpty() ?? false)
-    {
-      query = query.Where(t => t.Fee != null && filter.Fee!.Symbols!.Contains(t.Fee.Currency.Symbol));
+      if (filter.Fee.Currency is not null)
+      {
+        if (filter.Fee.Currency.Type is not null)
+        {
+          query = query.Where(t => filter.Fee.Currency.Type.ApplyFilter(t.Fee.Currency.Type)); // TODO: null check????
+        }
+        if (filter.Fee.Currency.Symbol is not null)
+        {
+          query = query.Where(t => filter.Fee.Currency.Symbol.ApplyFilter(t.Fee.Currency.Symbol));
+        }
+      }
+      if (filter.Fee.Wallet is not null)
+      {
+        if (filter.Fee.Wallet.Name is not null)
+        {
+          query = query.Where(t => filter.Fee.Wallet.Name.ApplyFilter(t.Fee.Wallet.Name));
+        }
+        if (filter.Fee.Wallet.Type is not null)
+        {
+          query = query.Where(t => filter.Fee.Wallet.Type.ApplyFilter(t.Fee.Wallet.Type));
+        }
+      }
     }
 
     // Net Value
-    if (filter.NetValue?.GreaterThan.HasValue ?? false)
+    if (filter.NetValue is not null)
     {
-      query = query.Where(t => t.NetValue > filter.NetValue.GreaterThan.Value);
-    }
-    if (filter.NetValue?.LessThan.HasValue ?? false)
-    {
-      query = query.Where(t => t.NetValue < filter.NetValue.LessThan.Value);
+      query = query.Where(t => filter.NetValue.ApplyFilter(t.NetValue));
     }
 
     // Fee Value
-    if (filter.FeeValue?.GreaterThan.HasValue ?? false)
+    if (filter.FeeValue is not null)
     {
-      query = query.Where(t => t.FeeValue > filter.FeeValue.GreaterThan.Value);
-    }
-    if (filter.FeeValue?.LessThan.HasValue ?? false)
-    {
-      query = query.Where(t => t.FeeValue < filter.FeeValue.LessThan.Value);
+      query = query.Where(t => filter.FeeValue.ApplyFilter(t.FeeValue));
     }
 
     // Description
     if (filter.Description is not null)
     {
-      query = query.Where(t => filter.Description.Evaluate(t.Description));
+      query = query.Where(t => filter.Description.ApplyFilter(t.Description));
     }
 
     // Margin

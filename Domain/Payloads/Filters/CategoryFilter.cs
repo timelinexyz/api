@@ -1,8 +1,10 @@
-﻿namespace Domain.Payloads;
+﻿using Core.Filters;
+
+namespace Domain.Payloads;
 
 public class CategoryFilter
 {
-  public IEnumerable<string>? Types { get; set; }
-  public IEnumerable<string>? Subtypes { get; set; }
-  public IEnumerable<string>? Labels { get; set; }
+  public StringFilter? Type { get; set; }
+  public StringFilter? Subtype { get; set; }
+  public StringFilter? Labels { get; set; }
 }

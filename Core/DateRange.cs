@@ -1,32 +1,29 @@
-﻿namespace Domain.Payloads;
+﻿namespace Core;
 
 public class DateRange
 {
   public DateTimeOffset? After { get; set; }
   public DateTimeOffset? Before { get; set; }
 
-  public bool IsValid() => After.HasValue || Before.HasValue;
-  public bool IsInvalid() => !IsValid();
+  public bool IsInvalid() => !IsPartiallyDefined();
+  public bool IsPartiallyDefined() => After.HasValue || Before.HasValue;
   public bool IsFullyDefined() => After.HasValue && Before.HasValue;
 
   public override string ToString()
   {
-    if (IsInvalid())
-    {
-      throw new InvalidOperationException("Invalid time period. At least one property must have value.");
-    }
-
     if (After.HasValue && Before.HasValue)
     {
       return $"After: {After.Value:d MMMM yyyy HH:mm:ss}, Before: {Before.Value:d MMMM yyyy HH:mm:ss}";
     }
-    else if (After.HasValue)
+    if (After.HasValue)
     {
       return $"After: {After.Value:d MMMM yyyy HH:mm:ss}";
     }
-    else
+    if (Before.HasValue)
     {
       return $"Before: {Before!.Value:d MMMM yyyy HH:mm:ss}";
     }
+
+    throw new InvalidOperationException("Both After and Before are null.");
   }
 }
