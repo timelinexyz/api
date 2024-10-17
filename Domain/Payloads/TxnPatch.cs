@@ -1,4 +1,4 @@
-﻿using Domain.Common;
+﻿using Core;
 using Domain.Enums;
 
 namespace Domain.Payloads;

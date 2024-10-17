@@ -1,5 +1,5 @@
 ﻿using Application.Exceptions;
-using Domain.Common;
+using Core;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Middleware;

@@ -1,5 +1,5 @@
 ﻿using Application.Interfaces.Common;
-using Domain.Common;
+using Core;
 using Domain.Entities;
 using Domain.Interfaces;
 using Domain.Payloads;

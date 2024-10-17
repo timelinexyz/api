@@ -1,4 +1,4 @@
-﻿namespace Domain.Common;
+﻿namespace Core;
 
 public class Error(string code, string message) : IEquatable<Error>
 {

@@ -1,4 +1,4 @@
-﻿namespace Domain.Common;
+﻿namespace Core;
 
 public abstract class Entity<T>
 {

@@ -1,10 +1,9 @@
-﻿using Domain.Common;
+﻿using Core;
 using Domain.Entities;
 using Domain.Interfaces;
 using Domain.Payloads;
 using Persistence.Koinly;
 using Persistence.Models;
-using System.Runtime.InteropServices.ComTypes;
 
 namespace Persistence.Repositories;
 

@@ -1,5 +1,5 @@
 ﻿using Application.Exceptions;
-using Domain.Common;
+using Core;
 using FluentValidation;
 using MediatR;
 

@@ -1,4 +1,4 @@
-﻿using Domain.Common;
+﻿using Core;
 using MediatR;
 
 namespace Application.Interfaces.Common;
