@@ -9,6 +9,7 @@ public enum Operator
   None,
 
   // Single value
+  IsNull,
   Equals,
   Contains,
   StartsWith,

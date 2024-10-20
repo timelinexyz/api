@@ -22,7 +22,9 @@ internal static class Extensions
     var currencySubtypes = new HashSet<string>();
     var walletTypes = new HashSet<string>();
 
-    foreach (var txn in txns)
+    var uniqueTxns = new HashSet<KoinlyTxn>(txns, new KoinlyTxnEqualityComparer());
+
+    foreach (var txn in uniqueTxns)
     {
       // from
       if (txn.from is not null)
@@ -70,7 +72,7 @@ internal static class Extensions
       }
     }
 
-    return txns;
+    return uniqueTxns.ToArray();
   }
 
   private static KoinlyTxn[] ReadAllKoinlyTransactionFiles()
