@@ -192,10 +192,7 @@ internal sealed class TxnRepository(KoinlyTransactions txns) : ITxnRepository
 
   public async Task Delete(IEnumerable<string> ids)
   {
-    txns = new KoinlyTransactions
-    {
-      Txns = txns.Txns.Where(t => !ids.Contains(t.ID)).ToArray()
-    };
+    txns.Txns = txns.Txns.Where(t => !ids.Contains(t.ID)).ToArray();
 
     await Task.CompletedTask;
   }

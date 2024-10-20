@@ -1,4 +1,6 @@
-﻿using Application.Txns.Search;
+﻿using Application.Txns.Commands.DeleteTxns;
+using Application.Txns.Commands.UpdateTxn;
+using Application.Txns.Queries.Search;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,6 +22,38 @@ public class TxnsController(ISender sender) : ControllerBase
     if (result.IsSuccess)
     {
       return Ok(result.Value);
+    }
+    else
+    {
+      // TODO: exception handling? what if different errors result din different status codes?
+      return BadRequest(result.Error);
+    }
+  }
+
+  [HttpPatch("update")]
+  public async Task<IActionResult> Update([Required][FromBody] UpdateTxnCommand updateCommand)
+  {
+    var result = await sender.Send(updateCommand);
+
+    if (result.IsSuccess)
+    {
+      return Ok();
+    }
+    else
+    {
+      // TODO: exception handling? what if different errors result din different status codes?
+      return BadRequest(result.Error);
+    }
+  }
+
+  [HttpPatch("delete")]
+  public async Task<IActionResult> Delete([Required][FromBody] DeleteTxnsCommand deleteCommand)
+  {
+    var result = await sender.Send(deleteCommand);
+
+    if (result.IsSuccess)
+    {
+      return Ok();
     }
     else
     {

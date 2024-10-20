@@ -4,7 +4,7 @@ using Domain.Entities;
 using Domain.Interfaces;
 using Domain.Payloads;
 
-namespace Application.Txns.Search;
+namespace Application.Txns.Queries.Search;
 
 public sealed record SearchTxnsQuery(TxnFilter Filter, TxnSort? Sort) : IQuery<IPaginatedList<Txn>>;
 

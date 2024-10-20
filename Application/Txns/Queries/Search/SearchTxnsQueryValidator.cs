@@ -2,7 +2,7 @@
 using Domain.Enums;
 using FluentValidation;
 
-namespace Application.Txns.Search;
+namespace Application.Txns.Queries.Search;
 
 public sealed class SearchTxnsQueryValidator : AbstractValidator<SearchTxnsQuery>
 {
