@@ -13,6 +13,12 @@ internal sealed class TxnRepository(KoinlyTransactions txns) : ITxnRepository
   {
     var query = txns.Txns.AsEnumerable();
 
+    // ID
+    if (!string.IsNullOrWhiteSpace(filter.ID))
+    {
+      query = query.Where(t => t.ID == filter.ID);
+    }
+
     // Parent
     if (!string.IsNullOrWhiteSpace(filter.ParentID))
     {

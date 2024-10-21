@@ -1,4 +1,5 @@
 ﻿using Application.Txns.Commands.DeleteTxns;
+using Application.Txns.Commands.GroupTxns;
 using Application.Txns.Commands.UpdateTxn;
 using Application.Txns.Queries.Search;
 using MediatR;
@@ -34,6 +35,22 @@ public class TxnsController(ISender sender) : ControllerBase
   public async Task<IActionResult> Update([Required][FromBody] UpdateTxnCommand updateCommand)
   {
     var result = await sender.Send(updateCommand);
+
+    if (result.IsSuccess)
+    {
+      return Ok();
+    }
+    else
+    {
+      // TODO: exception handling? what if different errors result din different status codes?
+      return BadRequest(result.Error);
+    }
+  }
+
+  [HttpPatch("group")]
+  public async Task<IActionResult> GroupTxns([Required][FromBody] GroupTxnsCommand groupCommand)
+  {
+    var result = await sender.Send(groupCommand);
 
     if (result.IsSuccess)
     {
