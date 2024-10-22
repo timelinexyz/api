@@ -1,9 +1,4 @@
 ﻿using FluentValidation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Txns.Commands.DeleteTxns;
 
@@ -11,6 +6,12 @@ public sealed class DeleteTxnsCommandValidator : AbstractValidator<DeleteTxnsCom
 {
   public DeleteTxnsCommandValidator()
   {
-
+    RuleFor(c => c.IDs)
+      .NotNull()
+      .WithMessage("{PropertyName} is required.")
+      .NotEmpty()
+      .WithMessage("{PropertyName} must not be empty.")
+      .Must(ids => ids.All(id => !string.IsNullOrWhiteSpace(id)))
+      .WithMessage("{PropertyName} must not contain null/empty/whitespace values.");
   }
 }

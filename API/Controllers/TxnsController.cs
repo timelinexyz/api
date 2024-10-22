@@ -20,15 +20,7 @@ public class TxnsController(ISender sender) : ControllerBase
   {
     var result = await sender.Send(query);
 
-    if (result.IsSuccess)
-    {
-      return Ok(result.Value);
-    }
-    else
-    {
-      // TODO: exception handling? what if different errors result din different status codes?
-      return BadRequest(result.Error);
-    }
+    return result.IsSuccess ? Ok() : BadRequest(result.Error);
   }
 
   [HttpPatch("update")]
@@ -36,15 +28,7 @@ public class TxnsController(ISender sender) : ControllerBase
   {
     var result = await sender.Send(updateCommand);
 
-    if (result.IsSuccess)
-    {
-      return Ok();
-    }
-    else
-    {
-      // TODO: exception handling? what if different errors result din different status codes?
-      return BadRequest(result.Error);
-    }
+    return result.IsSuccess ? Ok() : BadRequest(result.Error);
   }
 
   [HttpPatch("group")]
@@ -52,15 +36,7 @@ public class TxnsController(ISender sender) : ControllerBase
   {
     var result = await sender.Send(groupCommand);
 
-    if (result.IsSuccess)
-    {
-      return Ok();
-    }
-    else
-    {
-      // TODO: exception handling? what if different errors result din different status codes?
-      return BadRequest(result.Error);
-    }
+    return result.IsSuccess ? Ok() : BadRequest(result.Error);
   }
 
   [HttpPatch("delete")]
@@ -68,14 +44,6 @@ public class TxnsController(ISender sender) : ControllerBase
   {
     var result = await sender.Send(deleteCommand);
 
-    if (result.IsSuccess)
-    {
-      return Ok();
-    }
-    else
-    {
-      // TODO: exception handling? what if different errors result din different status codes?
-      return BadRequest(result.Error);
-    }
+    return result.IsSuccess ? Ok() : BadRequest(result.Error);
   }
 }
