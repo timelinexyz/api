@@ -1,5 +1,4 @@
-﻿using Application.Interfaces;
-using Application.Txns.Commands.DeleteTxns;
+﻿using Application.Txns.Commands.DeleteTxns;
 using Application.Txns.Commands.GroupTxns;
 using Application.Txns.Commands.UpdateTxn;
 using Application.Txns.Queries.Search;
@@ -14,7 +13,7 @@ namespace API.Controllers;
 [ApiController]
 [Route("api/v{version:apiVersion}/[controller]")]
 [ApiVersion("1.0")]
-public class TxnsController(ISender sender, IPriceProvider priceProvider) : ControllerBase
+public class TxnsController(ISender sender) : ControllerBase
 {
   [HttpPost("search")]
   public async Task<IActionResult> Search([Required][FromBody] SearchTxnsQuery query)
@@ -46,13 +45,5 @@ public class TxnsController(ISender sender, IPriceProvider priceProvider) : Cont
     var result = await sender.Send(deleteCommand);
 
     return result.IsSuccess ? Ok() : BadRequest(result.Error);
-  }
-
-  [HttpGet("prices")]
-  public async Task<IActionResult> GetPrices()
-  {
-    var result = await priceProvider.GetPrices(null);
-
-    return Ok(result);
   }
 }
