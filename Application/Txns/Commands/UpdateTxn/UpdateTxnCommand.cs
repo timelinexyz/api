@@ -15,7 +15,6 @@ public sealed record UpdateTxnCommand(
 
 public sealed record UpdateCategoryDto(
   string? Type,
-  string? Subtype,
   IEnumerable<string>? Labels);
 
 internal sealed class UpdateTxnCommandHandler(ITxnRepository txnRepository) : ICommandHandler<UpdateTxnCommand>
@@ -28,7 +27,6 @@ internal sealed class UpdateTxnCommandHandler(ITxnRepository txnRepository) : IC
       ParentID = request.ParentID,
       Status = request.Status,
       Type = request.Category?.Type,
-      Subtype = request.Category?.Subtype,
       Labels = request.Category?.Labels,
       Description = request.Description,
     };

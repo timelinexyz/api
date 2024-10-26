@@ -44,10 +44,6 @@ internal sealed class TxnRepository(KoinlyTransactions txns) : ITxnRepository
       {
         query = query.Where(t => filter.Category.Type.ApplyFilter(t.Category.Type));
       }
-      if (filter.Category.Subtype is not null)
-      {
-        query = query.Where(t => filter.Category.Subtype.ApplyFilter(t.Category.Subtype));
-      }
       if (filter.Category.Labels is not null)
       {
         query = query.Where(t => t.Category.Labels != null && filter.Category.Labels.ApplyFilter(t.Category.Labels));
@@ -181,10 +177,6 @@ internal sealed class TxnRepository(KoinlyTransactions txns) : ITxnRepository
     if (!string.IsNullOrWhiteSpace(txn.Type))
     {
       existing.Category.Type = txn.Type;
-    }
-    if (!string.IsNullOrWhiteSpace(txn.Subtype))
-    {
-      existing.Category.Subtype = txn.Subtype;
     }
     if (!string.IsNullOrWhiteSpace(txn.Description))
     {
