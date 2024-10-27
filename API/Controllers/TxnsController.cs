@@ -20,7 +20,7 @@ public class TxnsController(ISender sender) : ControllerBase
   {
     var result = await sender.Send(query);
 
-    return result.IsSuccess ? Ok() : BadRequest(result.Error);
+    return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
   }
 
   [HttpPatch("update")]

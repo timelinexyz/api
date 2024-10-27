@@ -1,13 +1,13 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace Domain.Payloads;
+namespace Domain.Enums;
 
 [JsonConverter(typeof(StringEnumConverter))]
-public enum TxnSortBy
+public enum TxnType
 {
   None,
-  Date,
-  Pnl,
-  NetValue,
+  Buy,
+  Sell,
+  Exchange
 }

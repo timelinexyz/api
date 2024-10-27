@@ -4,11 +4,12 @@ using Binance.Spot;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 
-namespace Infrastructure;
+namespace Infrastructure.Binance;
 
 internal class Binance(HttpClient client, IMemoryCache memoryCache) : IMarket
 {
   private const string SYMBOLS_PRICES_CACHE_KEY = "SYMBOLS_PRICES_CACHE_KEY";
+  private const int PRICES_STALE_TIME_MINUTES = 5;
 
   public async Task<IEnumerable<SymbolPrice>> GetPrices(IEnumerable<string> symbols)
   {
@@ -23,7 +24,7 @@ internal class Binance(HttpClient client, IMemoryCache memoryCache) : IMarket
       allSymbols = await GetAllSymbolPrices();
 
       memoryCache.Set(SYMBOLS_PRICES_CACHE_KEY, allSymbols,
-        new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(1)));
+        new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(PRICES_STALE_TIME_MINUTES)));
     }
 
     return allSymbols!;

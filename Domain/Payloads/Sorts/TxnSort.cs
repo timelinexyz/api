@@ -2,6 +2,6 @@
 
 public class TxnSort
 {
-  public TxnSortBy SortBy { get; set; }
-  public SortOrder SortOrder { get; set; }
+  public required TxnSortBy By { get; set; }
+  public required SortOrder Order { get; set; }
 }

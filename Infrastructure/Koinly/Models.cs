@@ -1,13 +1,5 @@
-﻿using Domain.Entities;
-using System.Diagnostics.CodeAnalysis;
+﻿namespace Infrastructure.Koinly;
 
-namespace Persistence.Koinly;
-
-internal class KoinlyTransactions
-{
-  public Txn[] Txns { get; set; }
-
-}
 internal class KoinlyTxnPage
 {
   public KoinlyTxn[] transactions { get; set; }
@@ -47,20 +39,4 @@ internal class KoinlyWallet
 {
   public string? name { get; set; }
   public string? wallet_type { get; set; }
-}
-
-internal class KoinlyTxnEqualityComparer : IEqualityComparer<KoinlyTxn>
-{
-  public bool Equals(KoinlyTxn? x, KoinlyTxn? y)
-  {
-    if (x is null || y is null)
-      return false;
-
-    return x.id == y.id;
-  }
-
-  public int GetHashCode([DisallowNull] KoinlyTxn obj)
-  {
-    return obj.id.GetHashCode();
-  }
 }

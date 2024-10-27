@@ -13,40 +13,40 @@ internal sealed class GroupTxnsCommandHandler(ITxnRepository txnRepository) : IC
 {
   public async Task<Result> Handle(GroupTxnsCommand request, CancellationToken cancellationToken)
   {
-    var parentTxn = await FindTxn(request.ParentID);
+    //var parentTxn = await FindTxn(request.ParentID);
 
-    if (parentTxn is null)
-    {
-      return DomainErrors.Txn.NotFound;
-    }
+    //if (parentTxn is null)
+    //{
+    //  return DomainErrors.Txn.NotFound;
+    //}
 
-    var tasks = request.ChildIDs.Select(id => txnRepository.Patch(new TxnPatch
-    {
-      ID = id,
-      ParentID = request.ParentID,
-    }));
+    //var tasks = request.ChildIDs.Select(id => txnRepository.Patch(new TxnPatch
+    //{
+    //  ID = id,
+    //  ParentID = request.ParentID,
+    //}));
 
-    await Task.WhenAll(tasks);
+    //await Task.WhenAll(tasks);
 
     return Result.Success();
   }
 
-  private async Task<Txn?> FindTxn(string id)
-  {
-    var filter = new TxnFilter
-    {
-      PageNumber = 1,
-      PageSize = 1,
-      ID = id
-    };
+  //private async Task<Txn?> FindTxn(string id)
+  //{
+  //  var filter = new TxnFilter
+  //  {
+  //    PageNumber = 1,
+  //    PageSize = 1,
+  //    ID = id
+  //  };
 
-    var txns = await txnRepository.Search(filter, sort: null);
+  //  var txns = await txnRepository.Search(filter, sort: null);
 
-    if (txns.TotalRecords > 1)
-    {
-      throw new InvalidOperationException($"There are {txns.TotalRecords} transactions with the same ID: {id}.");
-    }
+  //  if (txns.TotalRecords > 1)
+  //  {
+  //    throw new InvalidOperationException($"There are {txns.TotalRecords} transactions with the same ID: {id}.");
+  //  }
 
-    return txns.Records.FirstOrDefault();
-  }
+  //  return txns.Records.FirstOrDefault();
+  //}
 }

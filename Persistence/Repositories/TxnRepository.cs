@@ -2,27 +2,26 @@
 using Domain.Entities;
 using Domain.Interfaces;
 using Domain.Payloads;
-using Persistence.Koinly;
 using Persistence.Models;
 
 namespace Persistence.Repositories;
 
-internal sealed class TxnRepository(KoinlyTransactions txns) : ITxnRepository
+internal sealed class TxnRepository(IEnumerable<Txn> txns) : ITxnRepository
 {
   public async Task<IPaginatedList<Txn>> Search(TxnFilter filter, TxnSort sort)
   {
-    var query = txns.Txns.AsEnumerable();
+    var query = txns;
 
     // ID
-    if (!string.IsNullOrWhiteSpace(filter.ID))
+    if (filter.ID is not null)
     {
-      query = query.Where(t => t.ID == filter.ID);
+      query = query.Where(t => filter.ID.ApplyFilter(t.ID));
     }
 
     // Parent
-    if (!string.IsNullOrWhiteSpace(filter.ParentID))
+    if (filter.ParentID is not null)
     {
-      query = query.Where(t => t.ParentID == filter.ParentID);
+      query = query.Where(t => filter.ParentID.ApplyFilter(t.ParentID));
     }
 
     // Date
@@ -84,11 +83,11 @@ internal sealed class TxnRepository(KoinlyTransactions txns) : ITxnRepository
       {
         if (filter.To.Currency.Type is not null)
         {
-          query = query.Where(t => filter.To.Currency.Type.ApplyFilter(t.To.Currency.Type)); // TODO: null check????
+          query = query.Where(t => t.To is not null && filter.To.Currency.Type.ApplyFilter(t.To.Currency.Type));
         }
         if (filter.To.Currency.Symbol is not null)
         {
-          query = query.Where(t => filter.To.Currency.Symbol.ApplyFilter(t.To.Currency.Symbol));
+          query = query.Where(t => t.To is not null && filter.To.Currency.Symbol.ApplyFilter(t.To.Currency.Symbol));
         }
       }
       if (filter.To.Wallet is not null)
@@ -156,15 +155,48 @@ internal sealed class TxnRepository(KoinlyTransactions txns) : ITxnRepository
     }
 
     // Sorting
-    // TODO: Sorting
-    query = query.OrderByDescending(t => t.Date);
+    if (sort.By == TxnSortBy.Date)
+    {
+      if (sort.Order == SortOrder.Ascending)
+      {
+        query = query.OrderBy(t => t.Date);
+      }
+      if (sort.Order == SortOrder.Descending)
+      {
+        query = query.OrderByDescending(t => t.Date);
+      }
+    }
+
+    if (sort.By == TxnSortBy.Pnl)
+    {
+      if (sort.Order == SortOrder.Ascending)
+      {
+        query = query.OrderBy(t => t.Pnl);
+      }
+      if (sort.Order == SortOrder.Descending)
+      {
+        query = query.OrderByDescending(t => t.Pnl);
+      }
+    }
+
+    if (sort.By == TxnSortBy.NetValue)
+    {
+      if (sort.Order == SortOrder.Ascending)
+      {
+        query = query.OrderBy(t => t.NetValue);
+      }
+      if (sort.Order == SortOrder.Descending)
+      {
+        query = query.OrderByDescending(t => t.NetValue);
+      }
+    }
 
     return PaginatedList<Txn>.Create(query, filter.PageNumber, filter.PageSize);
   }
 
   public async Task Patch(TxnPatch txn)
   {
-    var existing = txns.Txns.Single(t => txn.ID == t.ID);
+    var existing = txns.Single(t => txn.ID == t.ID);
 
     if (!string.IsNullOrWhiteSpace(txn.ParentID))
     {
@@ -190,7 +222,7 @@ internal sealed class TxnRepository(KoinlyTransactions txns) : ITxnRepository
 
   public async Task Delete(IEnumerable<string> ids)
   {
-    txns.Txns = txns.Txns.Where(t => !ids.Contains(t.ID)).ToArray();
+    txns = txns.Where(t => !ids.Contains(t.ID)).ToArray();
 
     await Task.CompletedTask;
   }

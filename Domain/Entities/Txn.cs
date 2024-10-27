@@ -16,6 +16,33 @@ public class Txn : AuditEntity<string>
   public TxnAmount? Fee { get; set; }
   public required decimal NetValue { get; set; }
   public required decimal FeeValue { get; set; }
+  public Pnl? Pnl { get; set; }
   public required bool Margin { get; set; }
   public string? Description { get; set; }
+
+  //public string GetPair()
+  //{
+  //  // TODO: ordering?? BTCUSDC / USDCBTC
+
+  //  if (To is null)
+  //  {
+  //    throw new InvalidOperationException("There is no transaction pair.");
+  //  }
+
+  //  if (From.Currency.Type is CurrencyType.Fiat or CurrencyType.Crypto
+  //    && To.Currency.Type is CurrencyType.Fiat or CurrencyType.Crypto)
+  //  {
+  //    return To.Currency.Symbol + From.Currency.Symbol;
+
+  //  }
+
+  //  if (From.Currency.Type is CurrencyType.Stablecoin or CurrencyType.Fiat)
+  //  {
+  //    return From.Currency.Symbol.ToUpper() + To!.Currency.Symbol.ToUpper();
+  //  }
+  //  else
+  //  {
+  //    return From.Currency.Symbol.ToUpper() + To!.Currency.Symbol.ToUpper();
+  //  }
+  //}
 }

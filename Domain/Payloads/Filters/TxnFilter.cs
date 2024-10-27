@@ -5,8 +5,8 @@ namespace Domain.Payloads;
 
 public class TxnFilter : PaginationFilter
 {
-  public string? ID { get; set; }
-  public string? ParentID { get; set; }
+  public StringFilter? ID { get; set; }
+  public StringFilter? ParentID { get; set; }
   public DateRangeFilter? Date { get; set; }
   public TxnStatus? Status { get; set; }
   public CategoryFilter? Category { get; set; }
