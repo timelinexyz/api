@@ -39,13 +39,17 @@ public class StringFilter
   {
     return Operator switch
     {
+      Operator.IsNullOrEmpty => Not
+        ? !values.IsNullOrEmpty()
+        : values.IsNullOrEmpty(),
+
       Operator.Any => Not
-        ? Values.IsNullOrEmpty() || !Values.Overlaps(values)
-        : !Values.IsNullOrEmpty() && Values.Overlaps(values), // TODO: ex. get all TXNs that have ANY label??
+        ? values.IsNullOrEmpty() || !Values.Overlaps(values)
+        : !values.IsNullOrEmpty() && Values.Overlaps(values),
 
       Operator.All => Not
-        ? Values.IsNullOrEmpty() || !Values.IsSubsetOf(values)
-        : !Values.IsNullOrEmpty() && Values.IsSubsetOf(values),
+        ? values.IsNullOrEmpty() || !Values.IsSubsetOf(values)
+        : !values.IsNullOrEmpty() && Values.IsSubsetOf(values),
 
       _ => throw new InvalidOperationException($"Operator: {Operator} is not supported against a string array."),
     };

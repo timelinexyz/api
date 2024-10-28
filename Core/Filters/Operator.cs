@@ -16,6 +16,7 @@ public enum Operator
   EndsWith,
 
   // Array
+  IsNullOrEmpty,
   In,
   Any,
   All,

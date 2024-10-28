@@ -8,7 +8,7 @@ public sealed class SearchTxnsQueryValidator : AbstractValidator<SearchTxnsQuery
 {
   private static readonly HashSet<Operator> _allSingleValueOperators = [Operator.IsNull, Operator.Equals, Operator.Contains, Operator.StartsWith, Operator.EndsWith, Operator.In];
   private static readonly HashSet<Operator> _validSingleValueOperators = [Operator.IsNull, Operator.Equals, Operator.Contains, Operator.StartsWith, Operator.EndsWith];
-  private static readonly HashSet<Operator> _validArrayConditionOperators = [Operator.All, Operator.Any];
+  private static readonly HashSet<Operator> _validArrayConditionOperators = [Operator.IsNullOrEmpty, Operator.All, Operator.Any];
 
   public SearchTxnsQueryValidator()
   {
@@ -109,9 +109,14 @@ public sealed class SearchTxnsQueryValidator : AbstractValidator<SearchTxnsQuery
           .WithMessage($"Invalid Operator. Allowed values: {string.Join(", ", _validArrayConditionOperators.Select(o => o.ToString()))}");
 
         RuleFor(q => q.Filter.Category!.Labels!.Values)
-          .Must(v => v.All(l => !string.IsNullOrWhiteSpace(l)))
+          .Must(v => !v.IsNullOrEmpty() && v.All(l => !string.IsNullOrWhiteSpace(l)))
           .WithMessage("Values must contain at least a single string value and cannot have null/empty/whitespace values.")
-          .When(q => !q.Filter.Category!.Labels!.Values.IsNullOrEmpty());
+          .When(q => q.Filter.Category!.Labels!.Operator is Operator.Any or Operator.All);
+
+        RuleFor(q => q.Filter.Category!.Labels!.Values)
+          .Must(v => v.IsNullOrEmpty())
+          .WithMessage("Values cannot contain any value.")
+          .When(q => q.Filter.Category!.Labels!.Operator is Operator.IsNullOrEmpty);
       });
     });
 
