@@ -24,23 +24,25 @@ internal sealed class SearchTxnsQueryHandler(ITxnRepository txnRepository, IMark
 
     var page = await txnRepository.Search(request.Filter, sort);
 
-    //var pairs = page.Records
-    //  .Where(t => t.Category.Type == TxnType.Buy.ToString())
-    //  .Select(t => t.GetPair());
-
-    var prices = await market.GetPrices(["BTCEUR"]);
-
-    foreach (var txn in page.Records.Where(t => t.Category.Type == TxnType.Buy.ToString() && t.To.Currency.Symbol == "BTC"))
-    {
-      //var pair = txn.GetPair();
-      var price = prices.First();
-      txn.Pnl = new Pnl
-      {
-        Value = price.Price * txn.To.Amount - txn.From.Amount,
-        Percentage = Extensions.PercentageChange(txn.From.Amount, price.Price * txn.To.Amount),
-      };
-    }
-
     return Result.Create(page);
+
+    ////var pairs = page.Records
+    ////  .Where(t => t.Category.Type == TxnType.Buy.ToString())
+    ////  .Select(t => t.GetPair());
+
+    //var prices = await market.GetPrices(["BTCEUR"]);
+
+    //foreach (var txn in page.Records.Where(t => t.Category.Type == TxnType.Buy.ToString() && t.To.Currency.Symbol == "BTC"))
+    //{
+    //  //var pair = txn.GetPair();
+    //  var price = prices.First();
+    //  txn.Pnl = new Pnl
+    //  {
+    //    Value = price.Price * txn.To.Amount - txn.From.Amount,
+    //    Percentage = Extensions.PercentageChange(txn.From.Amount, price.Price * txn.To.Amount),
+    //  };
+    //}
+
+    //return Result.Create(page);
   }
 }

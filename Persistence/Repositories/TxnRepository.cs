@@ -191,6 +191,8 @@ internal sealed class TxnRepository(IEnumerable<Txn> txns) : ITxnRepository
       }
     }
 
+    await Task.CompletedTask;
+
     return PaginatedList<Txn>.Create(query, filter.PageNumber, filter.PageSize);
   }
 
