@@ -103,10 +103,10 @@ internal static class KoinlyTxnConverter
 
   private static string GetTxnType(this KoinlyTxn txn)
   {
-    var fromType = txn.from?.currency?.type;
-    var toType = txn.to?.currency?.type;
+    var fromType = txn.from?.currency!.GetCurrencyType();
+    var toType = txn.to?.currency!.GetCurrencyType();
 
-    if (!string.IsNullOrWhiteSpace(fromType) && !string.IsNullOrWhiteSpace(toType))
+    if (fromType != CurrencyType.None && toType != CurrencyType.None)
     {
       return GetTxnType(fromType, toType);
     }
@@ -116,11 +116,11 @@ internal static class KoinlyTxnConverter
     }
   }
 
-  private static string GetTxnType(string fromCurrency, string toCurrency)
+  private static string GetTxnType(CurrencyType? from, CurrencyType? to)
   {
-    if (fromCurrency.Equals(CurrencyType.Fiat.ToString(), StringComparison.OrdinalIgnoreCase))
+    if (from is CurrencyType.Fiat or CurrencyType.Stablecoin)
     {
-      if (toCurrency.Equals(CurrencyType.Crypto.ToString(), StringComparison.OrdinalIgnoreCase))
+      if (to is CurrencyType.Crypto)
       {
         return TxnType.Buy.ToString();
       }
@@ -130,25 +130,9 @@ internal static class KoinlyTxnConverter
       }
     }
 
-    if (fromCurrency.Equals(CurrencyType.Stablecoin.ToString(), StringComparison.OrdinalIgnoreCase))
+    if (from is CurrencyType.Crypto)
     {
-      if (toCurrency.Equals(CurrencyType.Crypto.ToString(), StringComparison.OrdinalIgnoreCase))
-      {
-        return TxnType.Buy.ToString();
-      }
-      else
-      {
-        return TxnType.Exchange.ToString();
-      }
-    }
-
-    if (fromCurrency.Equals(CurrencyType.Crypto.ToString(), StringComparison.OrdinalIgnoreCase))
-    {
-      if (toCurrency.Equals(CurrencyType.Fiat.ToString(), StringComparison.OrdinalIgnoreCase))
-      {
-        return TxnType.Sell.ToString();
-      }
-      if (toCurrency.Equals(CurrencyType.Stablecoin.ToString(), StringComparison.OrdinalIgnoreCase))
+      if (to is CurrencyType.Fiat or CurrencyType.Stablecoin)
       {
         return TxnType.Sell.ToString();
       }
@@ -158,6 +142,6 @@ internal static class KoinlyTxnConverter
       }
     }
 
-    throw new InvalidOperationException("Unsupported Txn.From/Txn.To currency type.");
+    return TxnType.Unknown.ToString();
   }
 }
