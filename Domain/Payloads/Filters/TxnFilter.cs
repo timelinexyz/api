@@ -13,8 +13,8 @@ public class TxnFilter : PaginationFilter
   public AmountFilter? From { get; set; }
   public AmountFilter? To { get; set; }
   public AmountFilter? Fee { get; set; }
-  public NumberRangeFilter<decimal>? NetValue { get; set; }
-  public NumberRangeFilter<decimal>? FeeValue { get; set; }
+  public DecimalRangeFilter? NetValue { get; set; }
+  public DecimalRangeFilter? FeeValue { get; set; }
   public StringFilter? Description { get; set; }
   public bool? Margin { get; set; }
 }

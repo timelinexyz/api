@@ -7,7 +7,7 @@ namespace Domain.Enums;
 public enum CurrencyType
 {
   None,
-  Crypto = 1,
-  Stablecoin = 2,
-  Fiat = 3
+  Crypto,
+  Stablecoin,
+  Fiat
 }

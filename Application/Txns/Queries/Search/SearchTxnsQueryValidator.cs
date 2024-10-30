@@ -6,7 +6,6 @@ namespace Application.Txns.Queries.Search;
 
 public sealed class SearchTxnsQueryValidator : AbstractValidator<SearchTxnsQuery>
 {
-  private static readonly HashSet<Operator> _allSingleValueOperators = [Operator.IsNull, Operator.Equals, Operator.Contains, Operator.StartsWith, Operator.EndsWith, Operator.In];
   private static readonly HashSet<Operator> _validSingleValueOperators = [Operator.IsNull, Operator.Equals, Operator.Contains, Operator.StartsWith, Operator.EndsWith];
   private static readonly HashSet<Operator> _validArrayConditionOperators = [Operator.IsNullOrEmpty, Operator.All, Operator.Any];
 
@@ -24,44 +23,14 @@ public sealed class SearchTxnsQueryValidator : AbstractValidator<SearchTxnsQuery
       .WithMessage("{PropertyName} must be less than or equal to 100.");
 
     // ID
-    When(q => q.Filter.ID is not null, () =>
-    {
-      When(q => q.Filter.ID!.Operator is not Operator.In, () =>
-      {
-        RuleFor(q => q.Filter.ID!.Operator)
-          .Must(o => _validSingleValueOperators.Contains(o))
-          .WithMessage($"Invalid Operator. Allowed values: {string.Join(", ", _allSingleValueOperators.Select(o => o.ToString()))}");
-
-        RuleFor(q => q.Filter.ID!.Values)
-          .Must(v => !v.IsNullOrEmpty() && v.Count == 1 && !string.IsNullOrWhiteSpace(v.First()))
-          .WithMessage("Values must contain a single string value that is not null/empty/whitespace.");
-      });
-
-      RuleFor(q => q.Filter.ID!.Values)
-        .Must(v => !v.IsNullOrEmpty() && v.All(l => !string.IsNullOrWhiteSpace(l)))
-        .WithMessage("Values must contain at least a single string value and cannot have null/empty/whitespace values.")
-        .When(q => q.Filter.ID!.Operator is Operator.In);
-    });
+    RuleFor(q => q.Filter.ID)
+      .SetValidator(new StringFilterValidator()!)
+      .When(q => q.Filter.ID is not null);
 
     // Parent ID
-    When(q => q.Filter.ParentID is not null, () =>
-    {
-      When(q => q.Filter.ParentID!.Operator is not Operator.In, () =>
-      {
-        RuleFor(q => q.Filter.ParentID!.Operator)
-          .Must(o => _validSingleValueOperators.Contains(o))
-          .WithMessage($"Invalid Operator. Allowed values: {string.Join(", ", _allSingleValueOperators.Select(o => o.ToString()))}");
-
-        RuleFor(q => q.Filter.ParentID!.Values)
-          .Must(v => !v.IsNullOrEmpty() && v.Count == 1 && !string.IsNullOrWhiteSpace(v.First()))
-          .WithMessage("Values must contain a single string value that is not null/empty/whitespace.");
-      });
-
-      RuleFor(q => q.Filter.ParentID!.Values)
-        .Must(v => !v.IsNullOrEmpty() && v.All(l => !string.IsNullOrWhiteSpace(l)))
-        .WithMessage("Values must contain at least a single string value and cannot have null/empty/whitespace values.")
-        .When(q => q.Filter.ParentID!.Operator is Operator.In);
-    });
+    RuleFor(q => q.Filter.ParentID)
+      .SetValidator(new StringFilterValidator()!)
+      .When(q => q.Filter.ParentID is not null);
 
     // Date
     RuleFor(q => q.Filter.Date)
@@ -78,28 +47,13 @@ public sealed class SearchTxnsQueryValidator : AbstractValidator<SearchTxnsQuery
     When(q => q.Filter.Category is not null, () =>
     {
       RuleFor(q => q.Filter.Category)
-        .Must(c => c.Type is not null || c.Labels is not null)
-        .WithMessage("{PropertyName} must have at least one of Type/Labels fields set.");
+        .Must(c => c.IsValid())
+        .WithMessage("{PropertyName} must have at least one of Type/Labels filters set.");
 
       // Type
-      When(q => q.Filter.Category!.Type is not null, () =>
-      {
-        When(q => q.Filter.Category!.Type!.Operator is not Operator.In, () =>
-        {
-          RuleFor(q => q.Filter.Category!.Type!.Operator)
-            .Must(o => _validSingleValueOperators.Contains(o))
-            .WithMessage($"Invalid Operator. Allowed values: {string.Join(", ", _allSingleValueOperators.Select(o => o.ToString()))}");
-
-          RuleFor(q => q.Filter.Category!.Type!.Values)
-            .Must(v => !v.IsNullOrEmpty() && v.Count == 1 && !string.IsNullOrWhiteSpace(v.First()))
-            .WithMessage("Values must contain a single string value that is not null/empty/whitespace.");
-        });
-
-        RuleFor(q => q.Filter.Category!.Type!.Values)
-          .Must(v => !v.IsNullOrEmpty() && v.All(l => !string.IsNullOrWhiteSpace(l)))
-          .WithMessage("Values must contain at least a single string value and cannot have null/empty/whitespace values.")
-          .When(q => q.Filter.Category!.Type!.Operator is Operator.In);
-      });
+      RuleFor(q => q.Filter.Category!.Type)
+        .SetValidator(new StringFilterValidator()!)
+        .When(q => q.Filter.Category!.Type is not null);
 
       // Labels
       When(q => q.Filter.Category!.Labels is not null, () =>
@@ -121,30 +75,29 @@ public sealed class SearchTxnsQueryValidator : AbstractValidator<SearchTxnsQuery
     });
 
     // From
+    RuleFor(q => q.Filter.From)
+      .SetValidator(new AmountFilterValidator()!)
+      .When(q => q.Filter.From is not null);
+
     // To
+    RuleFor(q => q.Filter.To)
+      .SetValidator(new AmountFilterValidator()!)
+      .When(q => q.Filter.To is not null);
+
     // Fee
+    RuleFor(q => q.Filter.Fee)
+      .SetValidator(new AmountFilterValidator()!)
+      .When(q => q.Filter.Fee is not null);
 
     // Net Value
     RuleFor(q => q.Filter.NetValue)
-      .Must(n => n.GreaterThan != default || n.LessThan != default)
-      .WithMessage("{PropertyName} must have at least one of GreaterThan/LessThan fields set.")
+      .SetValidator(new DecimalValueValidator()!)
       .When(q => q.Filter.NetValue is not null);
-
-    RuleFor(q => q.Filter.NetValue)
-      .Must(nv => nv.GreaterThan < nv.LessThan)
-      .WithMessage("When both GreaterThan and LessThan are set, GreaterThan must be less than LessThan.")
-      .When(q => q.Filter.NetValue is not null && (q.Filter.NetValue.GreaterThan != default && q.Filter.NetValue.LessThan != default));
-
+    
     // Fee Value
     RuleFor(q => q.Filter.FeeValue)
-      .Must(n => n.GreaterThan != default || n.LessThan != default)
-      .WithMessage("{PropertyName} must have at least one of GreaterThan/LessThan fields set.")
+      .SetValidator(new DecimalValueValidator()!)
       .When(q => q.Filter.FeeValue is not null);
-
-    RuleFor(q => q.Filter.FeeValue)
-      .Must(nv => nv.GreaterThan < nv.LessThan)
-      .WithMessage("When both GreaterThan and LessThan are set, GreaterThan must be less than LessThan.")
-      .When(q => q.Filter.FeeValue is not null && (q.Filter.FeeValue.GreaterThan != default && q.Filter.FeeValue.LessThan != default));
 
     // Description
     When(q => q.Filter.Description is not null, () =>

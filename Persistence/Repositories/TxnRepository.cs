@@ -56,22 +56,22 @@ internal sealed class TxnRepository(IEnumerable<Txn> txns) : ITxnRepository
       {
         if (filter.From.Currency.Type is not null)
         {
-          query = query.Where(t => filter.From.Currency.Type.ApplyFilter(t.From.Currency.Type));
+          query = query.Where(t => t.From is not null && filter.From.Currency.Type.ApplyFilter(t.From.Currency.Type));
         }
         if (filter.From.Currency.Symbol is not null)
         {
-          query = query.Where(t => filter.From.Currency.Symbol.ApplyFilter(t.From.Currency.Symbol));
+          query = query.Where(t => t.From is not null && filter.From.Currency.Symbol.ApplyFilter(t.From.Currency.Symbol));
         }
       }
       if (filter.From.Wallet is not null)
       {
         if (filter.From.Wallet.Name is not null)
         {
-          query = query.Where(t => filter.From.Wallet.Name.ApplyFilter(t.From.Wallet.Name));
+          query = query.Where(t => t.From is not null && filter.From.Wallet.Name.ApplyFilter(t.From.Wallet.Name));
         }
         if (filter.From.Wallet.Type is not null)
         {
-          query = query.Where(t => filter.From.Wallet.Type.ApplyFilter(t.From.Wallet.Type));
+          query = query.Where(t => t.From is not null && filter.From.Wallet.Type.ApplyFilter(t.From.Wallet.Type));
         }
       }
     }
@@ -94,11 +94,11 @@ internal sealed class TxnRepository(IEnumerable<Txn> txns) : ITxnRepository
       {
         if (filter.To.Wallet.Name is not null)
         {
-          query = query.Where(t => filter.To.Wallet.Name.ApplyFilter(t.To.Wallet.Name));
+          query = query.Where(t => t.To is not null && filter.To.Wallet.Name.ApplyFilter(t.To.Wallet.Name));
         }
         if (filter.To.Wallet.Type is not null)
         {
-          query = query.Where(t => filter.To.Wallet.Type.ApplyFilter(t.To.Wallet.Type));
+          query = query.Where(t => t.To is not null && filter.To.Wallet.Type.ApplyFilter(t.To.Wallet.Type));
         }
       }
     }

@@ -1,21 +1,21 @@
 ﻿namespace Core.Filters;
 
-public class NumberRangeFilter<TNumber> where TNumber : IComparable
+public class DecimalRangeFilter
 {
-  public TNumber? GreaterThan { get; set; }
-  public TNumber? LessThan { get; set; }
+  public decimal? GreaterThan { get; set; }
+  public decimal? LessThan { get; set; }
 
-  public bool ApplyFilter(TNumber value)
+  public bool ApplyFilter(decimal value)
   {
-    if (GreaterThan is not null && LessThan is not null)
+    if (GreaterThan != default && LessThan != default)
     {
       return value.CompareTo(GreaterThan) > 0 && value.CompareTo(LessThan) < 0;
     }
-    if (GreaterThan is not null)
+    if (GreaterThan != default)
     {
       return value.CompareTo(GreaterThan) > 0;
     }
-    if (LessThan is not null)
+    if (LessThan != default)
     {
       return value.CompareTo(LessThan) < 0;
     }
