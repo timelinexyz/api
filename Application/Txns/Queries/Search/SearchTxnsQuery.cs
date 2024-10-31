@@ -24,25 +24,33 @@ internal sealed class SearchTxnsQueryHandler(ITxnRepository txnRepository, IMark
 
     var page = await txnRepository.Search(request.Filter, sort);
 
+    await CalculatePnlForOpenBuyTxns(page.Records);
+
     return Result.Create(page);
+  }
 
-    ////var pairs = page.Records
-    ////  .Where(t => t.Category.Type == TxnType.Buy.ToString())
-    ////  .Select(t => t.GetPair());
+  private async Task CalculatePnlForOpenBuyTxns(IEnumerable<Txn> txns)
+  {
+    if (txns.IsNullOrEmpty()) return;
 
-    //var prices = await market.GetPrices(["BTCEUR"]);
+    foreach (var txn in txns.Where(t => t.Status == TxnStatus.Open && t.Category.Type == TxnType.Buy.ToString()))
+    {
+      var pair = txn.GetPair();
+      var prices = await market.GetPrices(pair);
 
-    //foreach (var txn in page.Records.Where(t => t.Category.Type == TxnType.Buy.ToString() && t.To.Currency.Symbol == "BTC"))
-    //{
-    //  //var pair = txn.GetPair();
-    //  var price = prices.First();
-    //  txn.Pnl = new Pnl
-    //  {
-    //    Value = price.Price * txn.To.Amount - txn.From.Amount,
-    //    Percentage = Extensions.PercentageChange(txn.From.Amount, price.Price * txn.To.Amount),
-    //  };
-    //}
+      if (prices.IsNullOrEmpty())
+      {
+        throw new MissingFieldException($"No price found for pair: {pair[0]}");
+      }
 
-    //return Result.Create(page);
+      var price = prices.First();
+
+      txn.Pnl = new Pnl
+      {
+        Value = price.Price * txn.To!.Amount,
+        Delta = price.Price * txn.To!.Amount - txn.From.Amount,
+        Percentage = Extensions.PercentageChange(txn.From.Amount, price.Price * txn.To.Amount),
+      };
+    }
   }
 }

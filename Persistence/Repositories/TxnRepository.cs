@@ -6,11 +6,11 @@ using Persistence.Models;
 
 namespace Persistence.Repositories;
 
-internal sealed class TxnRepository(IEnumerable<Txn> txns) : ITxnRepository
+internal sealed class TxnRepository(Txn[] txns) : ITxnRepository
 {
   public async Task<IPaginatedList<Txn>> Search(TxnFilter filter, TxnSort sort)
   {
-    var query = txns;
+    var query = txns.AsEnumerable();
 
     // ID
     if (filter.ID is not null)

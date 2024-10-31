@@ -5,9 +5,9 @@ namespace Infrastructure.Koinly;
 
 internal static class Extensions
 {
-  public static IEnumerable<Txn> GetKoinlyTxns()
+  public static Txn[] GetKoinlyTxns()
   {
-    return ReadAllKoinlyTransactionFiles().DoSomeAnalysis().Select(txn => txn.Convert());
+    return ReadAllKoinlyTransactionFiles().DoSomeAnalysis().Select(txn => txn.Convert()).ToArray();
   }
 
   private static KoinlyTxn[] DoSomeAnalysis(this KoinlyTxn[] txns)
