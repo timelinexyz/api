@@ -19,12 +19,4 @@ public class Txn : AuditEntity<string>
   public Pnl? Pnl { get; set; }
   public required bool Margin { get; set; }
   public string? Description { get; set; }
-
-  // TODO: This solution is hacky but IDK how to build the correct pair (BTCUSDC vs. USDCBTC)
-  public string[] GetPair()
-  {
-    if (To is null) return [];
-
-    return [From.Currency.Symbol + To.Currency.Symbol, To.Currency.Symbol + From.Currency.Symbol];
-  }
 }

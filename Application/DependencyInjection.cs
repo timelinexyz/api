@@ -1,4 +1,6 @@
 ﻿using Application.Behaviors;
+using Application.Interfaces;
+using Application.Txns.Services;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
@@ -16,5 +18,7 @@ public static class DependencyInjection
     });
 
     services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+
+    services.AddScoped<IPnl, PnlCalculator>();
   }
 }
