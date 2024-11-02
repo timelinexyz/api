@@ -4,8 +4,7 @@ namespace Application.Interfaces;
 
 internal interface IPnl
 {
-  Task CalculatePnlAgainstLatestPrice(Txn txn);
-  Task CalculatePnlAgainstLatestPrice(IEnumerable<Txn> txns);
-  void CalculatePnlAgainstPrice(Txn txn, decimal price);
-  void CalculatePnlAgainstPrice(IEnumerable<Txn> txns, decimal price);
+  Task CalculatePnlAgainstLatestPrice(Txn buyTxn);
+  Task CalculatePnlAgainstLatestPrice(IEnumerable<Txn> buyTxns);
+  void CalculatePnl(IEnumerable<Txn> buyTxns, Txn sellTxn);
 }

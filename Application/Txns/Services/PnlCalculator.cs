@@ -6,15 +6,15 @@ namespace Application.Txns.Services;
 
 internal sealed class PnlCalculator(IMarket market) : IPnl
 {
-  public async Task CalculatePnlAgainstLatestPrice(Txn txn)
+  public async Task CalculatePnlAgainstLatestPrice(Txn buyTxn)
   {
-    if (txn.To is null)
+    if (buyTxn.To is null)
     {
       throw new InvalidOperationException("Cannot calculate PnL without To.");
     }
 
     // TODO: This solution is hacky but IDK how to build the correct pair (BTCUSDC vs. USDCBTC)
-    string[] pair = [txn.From.Currency.Symbol + txn.To.Currency.Symbol, txn.To.Currency.Symbol + txn.From.Currency.Symbol];
+    string[] pair = [buyTxn.From.Currency.Symbol + buyTxn.To.Currency.Symbol, buyTxn.To.Currency.Symbol + buyTxn.From.Currency.Symbol];
 
     if (pair.IsNullOrEmpty())
     {
@@ -28,27 +28,42 @@ internal sealed class PnlCalculator(IMarket market) : IPnl
       throw new InvalidOperationException($"No price found for pair: {pair[0]} or {pair[1]}");
     }
 
-    var price = prices.First();
-
-    CalculatePnlAgainstPrice(txn, price.Price);
+    CalculatePnlAgainstPrice(buyTxn, prices.First().Price);
   }
 
-  public async Task CalculatePnlAgainstLatestPrice(IEnumerable<Txn> txns)
+  public async Task CalculatePnlAgainstLatestPrice(IEnumerable<Txn> buyTxns)
   {
-    foreach (var txn in txns)
+    foreach (var txn in buyTxns)
     {
       await CalculatePnlAgainstLatestPrice(txn);
     }
   }
 
-  public void CalculatePnlAgainstPrice(Txn txn, decimal price)
+  public void CalculatePnl(IEnumerable<Txn> buyTxns, Txn sellTxn)
   {
-    if (txn.To is null)
-    {
-      throw new InvalidOperationException("Cannot calculate PnL without To.");
-    }
+    CalculatePnlAgainstPrice(buyTxns, sellTxn.To!.Amount / sellTxn.From.Amount);
 
-    var current = price * txn.To.Amount;
+    var allTxnsDelta = buyTxns.Sum(t => t.Pnl!.Delta);
+
+    sellTxn.Pnl = new Pnl
+    {
+      Value = sellTxn.To.Amount,
+      Delta = allTxnsDelta,
+      Percentage = ExtensionMethods.PercentageChange(sellTxn.To.Amount, sellTxn.To.Amount + allTxnsDelta),
+    };
+  }
+
+  private static void CalculatePnlAgainstPrice(IEnumerable<Txn> txns, decimal price)
+  {
+    foreach (var txn in txns)
+    {
+      CalculatePnlAgainstPrice(txn, price);
+    }
+  }
+
+  private static void CalculatePnlAgainstPrice(Txn txn, decimal price)
+  {
+    var current = price * txn.To!.Amount;
 
     txn.Pnl = new Pnl
     {
@@ -56,13 +71,5 @@ internal sealed class PnlCalculator(IMarket market) : IPnl
       Delta = current - txn.From.Amount,
       Percentage = ExtensionMethods.PercentageChange(txn.From.Amount, current),
     };
-  }
-
-  public void CalculatePnlAgainstPrice(IEnumerable<Txn> txns, decimal price)
-  {
-    foreach (var txn in txns)
-    {
-      CalculatePnlAgainstPrice(txn, price);
-    }
   }
 }

@@ -10,7 +10,7 @@ internal sealed class DeleteTxnsCommandHandler(ITxnRepository txnRepository) : I
 {
   public async Task<Result> Handle(DeleteTxnsCommand request, CancellationToken cancellationToken)
   {
-    await txnRepository.Delete(request.IDs);
+    await txnRepository.Delete(request.IDs.ToHashSet());
 
     return Result.Success();
   }

@@ -220,6 +220,10 @@ internal sealed class TxnRepository(Txn[] txns) : ITxnRepository
     {
       existing.Category.Labels = txn.Labels;
     }
+    if (txn.Pnl is not null)
+    {
+      existing.Pnl = txn.Pnl;
+    }
   }
 
   public async Task Delete(IEnumerable<string> ids)

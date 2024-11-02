@@ -1,4 +1,5 @@
 ﻿using Core;
+using Domain.Entities;
 using Domain.Enums;
 
 namespace Domain.Payloads;
@@ -10,4 +11,5 @@ public class TxnPatch : Entity<string>
   public string? Type { get; set; }
   public string? Description { get; set; }
   public IEnumerable<string>? Labels { get; set; }
+  public Pnl? Pnl { get; set; }
 }

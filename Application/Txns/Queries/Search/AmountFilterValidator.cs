@@ -40,6 +40,11 @@ public sealed class AmountFilterValidator : AbstractValidator<AmountFilter>
           .WithMessage("Values must contain a single currency type. Allowed values: Crypto, Stablecoin, Fiat")
           .When(f => f.Currency!.Type!.Operator is Operator.Equals);
       });
+
+      // Symbol
+      RuleFor(f => f.Currency!.Symbol)
+        .SetValidator(new StringFilterValidator()!)
+        .When(f => f.Currency!.Symbol is not null);
     });
 
     // Wallet
