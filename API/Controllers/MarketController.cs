@@ -24,4 +24,14 @@ public class MarketController(IMarket market) : ControllerBase
 
     return Ok(result);
   }
+
+  [HttpGet("candles")]
+  public async Task<IActionResult> CandleStickData([FromQuery] string symbol, DateTimeOffset startTime, DateTimeOffset endTime)
+  {
+    // TODO: validation
+
+    var result = await market.KlineCandlestickData(symbol, startTime, endTime);
+
+    return Ok(result);
+  }
 }
